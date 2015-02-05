@@ -37,11 +37,26 @@
     });
     socket.on('editing', function(data) {
       console.log("" + socket.user.name + " is editing " + data.post_id);
+      socket.join(data.post_id);
       if (posts[data.post_id] == null) {
         posts[data.post_id] = [];
       }
       posts[data.post_id].push(socket.user);
-      return socket.broadcast.emit('editing', {
+      console.log(posts[data.post_id]);
+      return socket["in"](data.post_id).emit('editing', {
+        post: data.post_id,
+        user: socket.user
+      });
+    });
+    socket.on('stop editing', function(data) {
+      console.log("" + socket.user.name + " is no longer editing " + data.post_id);
+      if (posts[data.post_id] == null) {
+        posts[data.post_id] = [];
+      }
+      posts[data.post_id].splice(posts[data.post_id].indexOf(socket.user), 1);
+      console.log(posts[data.post_id]);
+      console.log('emitting left event');
+      return socket.to(data.post_id).emit('left', {
         post: data.post_id,
         user: socket.user
       });
@@ -55,8 +70,10 @@
         if (_ref = socket.user.id, __indexOf.call(user_ids, _ref) < 0) {
           delete users[socket.user.id];
         }
+        delete posts[socket.user];
       }
-      return console.log(users);
+      console.log(users);
+      return console.log(posts);
     });
   });
 
