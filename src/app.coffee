@@ -2,7 +2,7 @@ express = require 'express'
 app = express()
 server = require('http').createServer(app)
 io = require('socket.io').listen(server)
-port = process.env.port || 3000
+port = process.env.port || 3001
 
 server.listen port, ->
   console.log "Server listening at port %d", port
