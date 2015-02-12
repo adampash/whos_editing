@@ -21,15 +21,20 @@ io.on 'connection', (socket) ->
   # add user to the socket
   socket.on 'add user', (data) ->
     console.log data
-    socket.user = data
+    socket.user = data.user
     users[socket.user.id] = socket.user
     user_ids.push socket.user.id
     console.log user_ids
     console.log users
 
+  # subscribe to what happens in a room
+  socket.on 'subscribe', (data) ->
+    socket.join(data.room)
+
   # when the client opens a post to edit
   socket.on 'editing', (data) ->
-    console.log "#{socket.user.name} is editing #{data.post_id}"
+    console.log data
+    console.log "#{socket.user.name} is editing #{data.postId}"
     socket.join(data.post_id)
     unless posts[data.post_id]?
       posts[data.post_id] = []

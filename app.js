@@ -29,14 +29,18 @@
     console.log('user connected');
     socket.on('add user', function(data) {
       console.log(data);
-      socket.user = data;
+      socket.user = data.user;
       users[socket.user.id] = socket.user;
       user_ids.push(socket.user.id);
       console.log(user_ids);
       return console.log(users);
     });
+    socket.on('subscribe', function(data) {
+      return socket.join(data.room);
+    });
     socket.on('editing', function(data) {
-      console.log("" + socket.user.name + " is editing " + data.post_id);
+      console.log(data);
+      console.log("" + socket.user.name + " is editing " + data.postId);
       socket.join(data.post_id);
       if (posts[data.post_id] == null) {
         posts[data.post_id] = [];
